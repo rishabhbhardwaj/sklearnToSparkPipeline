@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "name":"CountVectorizer",
+      "params":null
+    },
+    {
+      "name":"FeatureUnion",
+      "params":null
+    },
+    {
+      "name":"LinearRegression",
+      "params":{"fit_intercept":"true"}
+    }
+  ]
+}
