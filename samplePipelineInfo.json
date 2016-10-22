@@ -1,16 +1,19 @@
 {
   "stages": [
     {
-      "name":"CountVectorizer",
+      "name":"cv",
+      "className":"CountVectorizer",
       "params":null
     },
     {
-      "name":"FeatureUnion",
-      "params":null
+      "name":"fu",
+      "className":"FeatureUnion",
+      "params": {"columns":["cv"]}
     },
     {
-      "name":"LinearRegression",
-      "params":{"fit_intercept":"true"}
+      "name":"lr",
+      "className": "LinearRegression",
+      "params":{"fit_intercept":"True"}
     }
   ]
 }
