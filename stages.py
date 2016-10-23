@@ -1,32 +1,8 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import datasets, linear_model
 from sklearn.pipeline import FeatureUnion
+from skLearnPipeline import *
 import json
-
-"""
-{
- "stages": [
-   {
-     "name":"cv",
-     "className":"CountVectorizer"
-     "params":null
-   },
-   {
-     "name":"fu",
-     "className":"FeatureUnion"
-     "params": {"columns":["cv"]}
-   },
-   {
-     "name":"lr",
-     "className": "LinearRegression"
-     "params":{"fit_intercept":"true"}
-   }
- ]
-}
-"""
-
-
-
 
 def getCountVectorizerJson(count_vectorizer):
     count_vectorizer_dict = CountVectorizer().__dict__
@@ -68,29 +44,22 @@ def getObjectJson(className,classObject):
     elif className=='LinearRegression':
         return getLinearRegressionJson(classObject)
 
-def genJson(pipeline,json):
-    stagesStr = ""
+def genJson(pipeline):
     stages = pipeline.__dict__
+    sk_pipeline_serialize = skLearnPipeline()
+    sk_pipeline_serialize.stages=[]
     for stage in stages['steps']:
-        stagesStr+='{"name":"'+stage[0]+'","className":"'+type(stage[1]).__name__+'","params":"'+getObjectJson(type(stage[1]).__name__,stage[1])+'}'
+        sk_pipeline_stages_serailize = skLearnPipelineStages()
+        sk_pipeline_stages_serailize.name = stage[0]
+        sk_pipeline_stages_serailize.className = type(stage[1]).__name__
+        sk_pipeline_stages_serailize.params = getObjectJson(type(stage[1]).__name__,stage[1])
+        sk_pipeline_serialize.stages.append(sk_pipeline_stages_serailize)
 
-"""
-count_vectorizer = CountVectorizer()
-regr = linear_model.LinearRegression()
-print getCountVectorizerJson(count_vectorizer)
-print getLinearRegressionJson(regr)
-print getFeatureUnionJson()
-"""
-"""
-sklearn, spark
+    return sk_pipeline_serialize.toJSON()
 
-CountVectorizer:
-input, inputCol
-vocabulary, vocabulary
-binary, binary
-min_df, minDF
 
-LinearRegression:
-fit_intercept, fitIntercept
+from sklearn.pipeline import Pipeline
+pipeline = Pipeline([('cv', CountVectorizer())])
+serialized_output = genJson(pipeline)
 
-"""
+print(serialized_output)
